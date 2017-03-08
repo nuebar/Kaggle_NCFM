@@ -5,6 +5,11 @@ from keras.models import Model
 from keras.optimizers import RMSprop, SGD
 from keras.callbacks import ModelCheckpoint
 from keras.preprocessing.image import ImageDataGenerator
+import argparse
+
+parser = argparse.ArgumentParser(description='Fine-tune Inception V3 model.')
+parser.add_argument('--train_dir', type=str)
+parser.add_argument('--eval_dir', type=str)
 
 learning_rate = 0.0001
 img_width = 299
@@ -14,8 +19,8 @@ nbr_validation_samples = 758
 nbr_epochs = 25
 batch_size = 32
 
-train_data_dir = '/Users/pengpai/Desktop/python/DeepLearning/Kaggle/NCFM/data/train_split'
-val_data_dir = '/Users/pengpai/Desktop/python/DeepLearning/Kaggle/NCFM/data/val_split'
+train_dir = '/Users/pengpai/Desktop/python/DeepLearning/Kaggle/NCFM/data/train_split'
+eval_dir = '/Users/pengpai/Desktop/python/DeepLearning/Kaggle/NCFM/data/val_split'
 
 FishNames = ['ALB', 'BET', 'DOL', 'LAG', 'NoF', 'OTHER', 'SHARK', 'YFT']
 
@@ -56,7 +61,7 @@ train_datagen = ImageDataGenerator(
 val_datagen = ImageDataGenerator(rescale=1./255)
 
 train_generator = train_datagen.flow_from_directory(
-        train_data_dir,
+        train_dir,
         target_size = (img_width, img_height),
         batch_size = batch_size,
         shuffle = True,
@@ -66,7 +71,7 @@ train_generator = train_datagen.flow_from_directory(
         class_mode = 'categorical')
 
 validation_generator = val_datagen.flow_from_directory(
-        val_data_dir,
+        eval_dir,
         target_size=(img_width, img_height),
         batch_size=batch_size,
         shuffle = True,

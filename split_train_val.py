@@ -1,13 +1,20 @@
 import os
 import numpy as np
 import shutil
+import argparse
+
+parser = argparse.ArgumentParser(description='Simple random split on training data.')
+parser.add_argument('--train_dir', type=str)
+parser.add_argument('--work_dir', type=str)
 
 np.random.seed(2016)
 
-root_train = '/Users/pengpai/Desktop/python/DeepLearning/Kaggle/NCFM/data/train_split'
-root_val = '/Users/pengpai/Desktop/python/DeepLearning/Kaggle/NCFM/data/val_split'
-
-root_total = '/Users/pengpai/Desktop/python/DeepLearning/Kaggle/NCFM/data/train'
+train_split_dir = os.path.join(work_dir, "train")
+if not os.path.exists(train_split_dir):
+    os.makedirs(train_split_dir)
+val_split_dir = os.path.join(work_dir, "test")
+if not os.path.exists(val_split_dir):
+    os.makedirs(val_split_dir)
 
 FishNames = ['ALB', 'BET', 'DOL', 'LAG', 'NoF', 'OTHER', 'SHARK', 'YFT']
 
@@ -18,10 +25,10 @@ nbr_val_samples = 0
 split_proportion = 0.8
 
 for fish in FishNames:
-    if fish not in os.listdir(root_train):
-        os.mkdir(os.path.join(root_train, fish))
+    if fish not in os.listdir(train_split_dir):
+        os.mkdir(os.path.join(train_split_dir, fish))
 
-    total_images = os.listdir(os.path.join(root_total, fish))
+    total_images = os.listdir(os.path.join(train_dir, fish))
 
     nbr_train = int(len(total_images) * split_proportion)
 
@@ -32,17 +39,17 @@ for fish in FishNames:
     val_images = total_images[nbr_train:]
 
     for img in train_images:
-        source = os.path.join(root_total, fish, img)
-        target = os.path.join(root_train, fish, img)
+        source = os.path.join(train_dir, fish, img)
+        target = os.path.join(train_split_dir, fish, img)
         shutil.copy(source, target)
         nbr_train_samples += 1
 
-    if fish not in os.listdir(root_val):
-        os.mkdir(os.path.join(root_val, fish))
+    if fish not in os.listdir(val_split_dir):
+        os.mkdir(os.path.join(val_split_dir, fish))
 
     for img in val_images:
-        source = os.path.join(root_total, fish, img)
-        target = os.path.join(root_val, fish, img)
+        source = os.path.join(train_dir, fish, img)
+        target = os.path.join(val_split_dir, fish, img)
         shutil.copy(source, target)
         nbr_val_samples += 1
 
